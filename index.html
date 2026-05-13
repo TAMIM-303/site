@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tamim's Number Tool Ultra</title>
+    <style>
+        /* --- CODING THEME STYLES --- */
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --border-color: #30363d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-color: #58a6ff;
+            --success-color: #2ea043;
+            --danger-color: #da3633;
+            --code-font: 'Consolas', 'Monaco', 'Courier New', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--code-font); }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 100%;
+            max-width: 550px;
+            padding: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h2 { 
+            font-size: 20px; 
+            color: var(--accent-color); 
+            text-transform: uppercase; 
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 10px rgba(88, 166, 255, 0.3);
+        }
+        .dev-info { font-size: 12px; color: var(--text-secondary); text-align: right; }
+        .dev-info a { color: var(--success-color); text-decoration: none; font-weight: bold; }
+        
+        /* Input Area */
+        label { display: block; margin-bottom: 8px; font-size: 14px; color: var(--text-secondary); }
+        .input-label::before { content: "> "; color: var(--accent-color); }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            background-color: #0d1117;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            padding: 15px;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            transition: 0.3s;
+        }
+        textarea:focus { border-color: var(--accent-color); box-shadow: 0 0 10px rgba(88, 166, 255, 0.1); }
+
+        /* Settings Box */
+        .settings-box {
+            background: #0d1117;
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+        
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .setting-row:last-child { margin-bottom: 0; }
+
+        .toggle-label { cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .toggle-label input { cursor: pointer; accent-color: var(--accent-color); width: 16px; height: 16px; }
+
+        .country-input-group {
+            margin-top: 10px;
+            padding-left: 20px;
+            display: none; 
+            border-left: 2px solid var(--border-color);
+        }
+        .country-input-group.active { display: block; animation: fadeIn 0.3s; }
+
+        .country-input {
+            background: #000;
+            border: 1px solid var(--border-color);
+            color: var(--success-color);
+            padding: 6px 10px;
+            border-radius: 4px;
+            width: 100px;
+            outline: none;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* --- PREMIUM BUTTONS --- */
+        button {
+            cursor: pointer;
+            border: none;
+            color: #fff;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 6px;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            font-family: var(--code-font);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Premium Run Button */
+        .btn-run {
+            background: linear-gradient(135deg, #238636 0%, #2ea043 100%);
+            box-shadow: 0 4px 15px rgba(46, 160, 67, 0.4);
+        }
+        .btn-run:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 160, 67, 0.6);
+        }
+        .btn-run:active { transform: translateY(1px); }
+
+        /* Premium Copy Button */
+        .btn-copy {
+            background: linear-gradient(135deg, #1f6feb 0%, #58a6ff 100%);
+            font-size: 18px;
+            padding: 18px;
+            margin-top: 25px;
+            box-shadow: 0 4px 15px rgba(88, 166, 255, 0.4);
+        }
+        .btn-copy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(88, 166, 255, 0.6);
+            filter: brightness(1.1);
+        }
+
+        /* Danger Button */
+        .btn-danger {
+            background: rgba(218, 54, 51, 0.1);
+            border: 1px solid var(--danger-color);
+            color: var(--danger-color);
+            font-size: 12px;
+            margin-top: 15px;
+            padding: 10px;
+            box-shadow: none;
+            background: transparent;
+        }
+        .btn-danger:hover {
+            background: var(--danger-color);
+            color: white;
+            box-shadow: 0 4px 10px rgba(218, 54, 51, 0.4);
+        }
+
+        /* Display Section */
+        #displaySection { display: none; animation: slideDown 0.3s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .code-display-box {
+            background-color: #000;
+            border: 1px solid #30363d;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 15px;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        }
+        .code-display-box::before {
+            content: "CURRENT_OUTPUT";
+            position: absolute; top: 0; left: 0; background: #30363d; color: #fff;
+            font-size: 10px; padding: 3px 8px; border-bottom-right-radius: 4px; font-weight: bold;
+        }
+        .current-number {
+            font-size: 38px; 
+            color: var(--success-color); 
+            font-weight: bold;
+            word-break: break-all; 
+            display: block; 
+            margin-top: 5px;
+            text-shadow: 0 0 10px rgba(46, 160, 67, 0.3);
+        }
+
+        /* Stats */
+        .console-stats {
+            background-color: #0d1117; border: 1px solid var(--border-color);
+            border-radius: 6px; padding: 15px; font-size: 12px; color: var(--text-secondary); margin-top: 20px;
+        }
+        .stat-line { display: flex; justify-content: space-between; margin-bottom: 6px; border-bottom: 1px solid #21262d; padding-bottom: 6px; }
+        .stat-line:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .stat-value { color: var(--accent-color); font-weight: bold; }
+
+        /* Footer & Feedback */
+        .footer-status { margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px; font-size: 10px; color: #484f58; text-align: center; }
+        .copy-feedback {
+            position: absolute; top: -45px; left: 50%; transform: translateX(-50%);
+            background: var(--success-color); color: white; padding: 6px 12px;
+            border-radius: 4px; font-size: 12px; opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            font-weight: bold;
+        }
+        .copy-feedback.show { opacity: 1; top: -50px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h2>&lt;Number_Tool /&gt;</h2>
+            <div class="dev-info">
+                Dev: <span style="color: #fff">Tamim Ahmed</span><br>
+                <a href="https://t.me/Unknown_Father" target="_blank">@Unknown_Father</a>
+            </div>
+        </header>
+
+        <!-- Input Section -->
+        <section id="inputSection">
+            <label for="numberInput" class="input-label">const numbers = [</label>
+            <textarea id="numberInput" placeholder="নম্বর লিখুন... (যেমন: +213557155472, 01712345678)"></textarea>
+            <div style="text-align: right; color: var(--text-secondary); font-size: 12px; margin-top: 5px;">];</div>
+            
+            <!-- Settings Box -->
+            <div class="settings-box">
+                <div class="setting-row">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="loopToggle"> Enable Loop (Repeat List)
+                    </label>
+                </div>
+                <div class="setting-row" style="margin-top: 12px;">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="countryToggle" onchange="toggleCountryInput()"> Enable Country Code Remove
+                    </label>
+                </div>
+                <div id="countryInputGroup" class="country-input-group">
+                    <label>Country Code:</label>
+                    <input type="text" id="countryCodeInput" class="country-input" placeholder="213" maxlength="6">
+                </div>
+                <div style="margin-top: 10px; font-size: 11px; color: #484f58;">
+                    * অক্ষর বা ভুল তথ্য অটোমেটিক বাদ দেওয়া হবে।
+                </div>
+            </div>
+            
+            <button class="btn-run" onclick="initProcess()">> Run Program</button>
+            <button class="btn-danger" onclick="hardReset()">> Clear Saved Data & Reset</button>
+        </section>
+
+        <!-- Display Section -->
+        <section id="displaySection">
+            <div style="position: relative;">
+                <div id="copyFeedback" class="copy-feedback">Copied to clipboard!</div>
+                
+                <div class="code-display-box">
+                    <span class="current-number" id="currentNumber">...</span>
+                </div>
+            </div>
+
+            <button class="btn-copy" id="copyBtn" onclick="copyAndNextAction()">
+                > Copy & Execute Next
+            </button>
+
+            <!-- Button to delete full list and go back -->
+            <button class="btn-danger" onclick="hardReset()">
+                > Delete Full List & Back to Input
+            </button>
+
+            <div class="console-stats">
+                <div class="stat-line">
+                    <span class="stat-label">// Valid Numbers Found:</span>
+                    <span class="stat-value" id="totalCount">0</span>
+                </div>
+                <div class="stat-line">
+                    <span class="stat-label">// Processed:</span>
+                    <span class="stat-value" id="usedCount">0</span>
+                </div>
+                <div class="stat-line">
+                    <span class="stat-label">// Remaining:</span>
+                    <span class="stat-value" id="remainingCount">0</span>
+                </div>
+                <div class="stat-line">
+                    <span class="stat-label">// Loop Status:</span>
+                    <span class="stat-value" id="loopStatusDisplay">OFF</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer-status">
+            System Status: Online | Auto-Clean: Active
+        </footer>
+    </div>
+
+    <script>
+        // State variables
+        let numbersArray = [];
+        let originalNumbersArray = []; 
+        let totalNumbers = 0;
+        let processedNumbers = 0;
+        let isLoopEnabled = false;
+        let isCountryRemoveEnabled = false;
+        let countryCode = "";
+
+        // DOM Elements
+        const inputSection = document.getElementById('inputSection');
+        const displaySection = document.getElementById('displaySection');
+        const numberInput = document.getElementById('numberInput');
+        const currentNumberEl = document.getElementById('currentNumber');
+        const totalCountEl = document.getElementById('totalCount');
+        const usedCountEl = document.getElementById('usedCount');
+        const remainingCountEl = document.getElementById('remainingCount');
+        const loopStatusEl = document.getElementById('loopStatusDisplay');
+        const copyBtn = document.getElementById('copyBtn');
+        const copyFeedback = document.getElementById('copyFeedback');
+        const loopToggle = document.getElementById('loopToggle');
+        const countryToggle = document.getElementById('countryToggle');
+        const countryInputGroup = document.getElementById('countryInputGroup');
+        const countryCodeInput = document.getElementById('countryCodeInput');
+
+        // --- INITIALIZATION ON LOAD ---
+        window.onload = function() {
+            // Load saved numbers
+            const savedData = localStorage.getItem('tamimNumbers');
+            if (savedData) {
+                numberInput.value = savedData;
+            }
+        };
+
+        // Toggle Country Input visibility
+        function toggleCountryInput() {
+            if(countryToggle.checked) {
+                countryInputGroup.classList.add('active');
+            } else {
+                countryInputGroup.classList.remove('active');
+            }
+        }
+
+        // --- CORE LOGIC ---
+
+        // Initialize Process
+        function initProcess() {
+            const rawText = numberInput.value;
+            
+            if (!rawText.trim()) {
+                alert("Error: Input is empty.");
+                return;
+            }
+
+            // Settings check
+            isLoopEnabled = loopToggle.checked;
+            isCountryRemoveEnabled = countryToggle.checked;
+            countryCode = countryCodeInput.value.trim();
+
+            // Split input by comma, space, newline
+            let rawItems = rawText.split(/[\s,]+/);
+
+            // --- SMART CLEANING LOGIC ---
+            let cleanNumbers = [];
+            
+            rawItems.forEach(item => {
+                let cleanItem = item.trim();
+                
+                // 1. Remove leading '+' if exists
+                if (cleanItem.startsWith('+')) {
+                    cleanItem = cleanItem.substring(1);
+                }
+
+                // 2. Validation: Must be digits only (0-9)
+                // This skips "abcd", "123abc", etc.
+                if (/^\d+$/.test(cleanItem) && cleanItem.length > 0) {
+                    cleanNumbers.push(cleanItem);
+                }
+            });
+
+            if (cleanNumbers.length === 0) {
+                alert("Error: No valid numbers found. Letters/Texts are auto-skipped.");
+                return;
+            }
+
+            // Update arrays
+            numbersArray = cleanNumbers;
+            originalNumbersArray = [...numbersArray];
+
+            // Save Raw Text (User might want to edit later)
+            localStorage.setItem('tamimNumbers', rawText);
+
+            // Init counters
+            totalNumbers = numbersArray.length;
+            processedNumbers = 0;
+
+            // UI Switch
+            inputSection.style.display = 'none';
+            displaySection.style.display = 'block';
+
+            // Update Loop Status Display
+            loopStatusEl.textContent = isLoopEnabled ? "ON" : "OFF";
+            loopStatusEl.style.color = isLoopEnabled ? "var(--success-color)" : "var(--text-secondary)";
+
+            renderUI();
+        }
+
+        // Update UI
+        function renderUI() {
+            if (numbersArray.length > 0) {
+                currentNumberEl.textContent = numbersArray[0];
+                updateStats();
+            } else {
+                handleListFinish();
+            }
+        }
+
+        // Update Statistics
+        function updateStats() {
+            totalCountEl.textContent = totalNumbers;
+            usedCountEl.textContent = processedNumbers;
+            remainingCountEl.textContent = numbersArray.length;
+        }
+
+        // Handle when list is empty
+        function handleListFinish() {
+            if (isLoopEnabled && originalNumbersArray.length > 0) {
+                // Loop is ON: Reset array
+                numbersArray = [...originalNumbersArray];
+                processedNumbers = 0; 
+                renderUI();
+            } else {
+                // Loop is OFF
+                currentNumberEl.textContent = "COMPLETED";
+                currentNumberEl.style.fontSize = "24px";
+                currentNumberEl.style.color = "var(--text-secondary)";
+                updateStats();
+                
+                copyBtn.style.opacity = "0.5";
+                copyBtn.style.pointerEvents = "none";
+            }
+        }
+
+        // Copy and Next Logic
+        function copyAndNextAction() {
+            if (numbersArray.length === 0) return;
+
+            let textToCopy = numbersArray[0];
+
+            // Country Code Logic
+            // Note: numbersArray already has '+' removed. So we just check digits.
+            if (isCountryRemoveEnabled && countryCode) {
+                if (textToCopy.startsWith(countryCode)) {
+                    textToCopy = textToCopy.substring(countryCode.length);
+                }
+            }
+
+            // 1. Copy
+            if (copyTextToClipboard(textToCopy)) {
+                // 2. Remove from list
+                numbersArray.shift();
+                processedNumbers++;
+
+                // 3. Feedback
+                showCopyFeedback();
+
+                // 4. Render Next
+                renderUI();
+            } else {
+                alert("Failed to copy.");
+            }
+        }
+
+        // --- UTILITIES ---
+
+        // Hard Reset: Delete List & Back
+        function hardReset() {
+            if(confirm("Are you sure you want to delete the full list and go back?")) {
+                numbersArray = [];
+                originalNumbersArray = [];
+                totalNumbers = 0;
+                processedNumbers = 0;
+
+                localStorage.removeItem('tamimNumbers');
+
+                numberInput.value = '';
+                copyBtn.style.opacity = "1";
+                copyBtn.style.pointerEvents = "all";
+                currentNumberEl.style.fontSize = "38px";
+                currentNumberEl.style.color = "var(--success-color)";
+
+                displaySection.style.display = 'none';
+                inputSection.style.display = 'block';
+            }
+        }
+
+        // Copy to Clipboard Function
+        function copyTextToClipboard(text) {
+            if (!navigator.clipboard) {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    const successful = document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    return successful;
+                } catch (err) {
+                    document.body.removeChild(textArea);
+                    return false;
+                }
+            }
+            return navigator.clipboard.writeText(text).then(() => true, () => false);
+        }
+
+        // Visual Feedback
+        function showCopyFeedback() {
+            copyFeedback.classList.add('show');
+            setTimeout(() => {
+                copyFeedback.classList.remove('show');
+            }, 1500);
+        }
+
+    </script>
+</body>
+</html>
